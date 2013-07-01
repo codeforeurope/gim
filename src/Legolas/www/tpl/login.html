@@ -1,0 +1,26 @@
+#parse("header.html")
+
+<div class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1">
+    <form class="form-stacked" accept-charset="UTF-8" action="/login" method="POST">
+        <div class="modal-header" style="padding-top: 2em">
+            <h1>Legolas login</h1>
+        </div>
+
+        <div class="modal-body">
+            <fieldset>
+                <legend>Password</legend>
+                <input id="password" type="password" name="password">
+            </fieldset>
+
+            #if($message)
+            <div class="alert-message error">$message</div>
+            #end
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById("password").focus();
+</script>
+
+#parse("footer.html")

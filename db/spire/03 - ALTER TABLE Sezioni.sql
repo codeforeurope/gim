@@ -1,0 +1,5 @@
+ALTER TABLE Sezioni
+ADD UNIQUE (TagSezione);
+
+ALTER TABLE Sezioni
+CHANGE TagSezione TagSezione VARCHAR(32) NOT NULL;

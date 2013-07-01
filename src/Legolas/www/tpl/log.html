@@ -1,0 +1,52 @@
+#set($title = "Log");
+#parse("header.html")
+
+<h1>Log</h1>
+
+<div style="text-align: center; margin-bottom: 2em">
+    <div id="btn-auto-refresh" class="btn success" style="font-size: 130%" onclick="toggleAutoRefresh()">Enable auto refresh</div>
+</div>
+
+
+<p>
+    <span id="last-update"></span>
+    <span id="auto-refresh-frequency" style="display: none"><br>Updated every 5 seconds</span>
+
+
+<p>
+<pre id="log" style="min-height: 40em">
+    Loading log...
+</pre>
+
+<script>
+    var updateLog = function() {
+        $.ajax({url:"/ajax/log?lines=30", success: function(result) {
+                $("#log").html(result);
+                $("#last-update").html("Last update on " + new Date());
+            }});
+    }
+    
+    var autoRefreshId = null; // ID of the setInterval handler    
+    var toggleAutoRefresh = function() {
+        if (autoRefreshId != null) {
+            clearInterval(autoRefreshId);
+            autoRefreshId = null;
+            $("#btn-auto-refresh").removeClass("danger");
+            $("#btn-auto-refresh").addClass("success");
+            $("#btn-auto-refresh").html("Enable auto refresh");
+            $("#auto-refresh-frequency").hide();
+        } else {
+            autoRefreshId = setInterval("updateLog()", 5000);
+            $("#btn-auto-refresh").addClass("danger");
+            $("#btn-auto-refresh").removeClass("success");
+            $("#btn-auto-refresh").html("Disable auto refresh");
+            $("#auto-refresh-frequency").show();
+        }
+    }
+    
+    updateLog();
+</script>
+
+<p><a href="/ajax/log">Download the whole log.</a>
+
+    #parse("footer.html")

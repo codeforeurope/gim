@@ -1,0 +1,61 @@
+#set( $percSharedA = $comparison.sharedEdges * 100 / $comparison.edgesA )
+#set( $percSharedB = $comparison.sharedEdges * 100 / $comparison.edgesB )
+
+<div class="well">
+
+    <h2>$comparison.description</h2>
+
+    <h3>Edges</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Experiment A</th>
+                <th>Experiment B</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Total edges</strong></td>
+                <td>$comparison.edgesA</td>
+                <td>$comparison.edgesB</td>
+            </tr>
+            <tr>
+                <td><strong>Shared edges</strong></td>
+                <td>$comparison.sharedEdges (${percSharedA}%)</td>
+                <td>$comparison.sharedEdges (${percSharedB}%)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Traffic parameters differences</h3>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Average difference</th>
+                <th>Standard deviation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Speed (km/h)</strong></td>
+                <td>$comparison.speedDiffAvg</td>
+                <td>$comparison.speedDiffStdDev</td>
+            </tr>
+            <tr>
+                <td><strong>Density (vehicles/km)</strong></td>
+                <td>$comparison.densityDiffAvg</td>
+                <td>$comparison.densityDiffStdDev</td>
+            </tr>
+            <tr>
+                <td><strong>Flow (vehicles/h)</strong></td>
+                <td>$comparison.flowDiffAvg</td>
+                <td>$comparison.flowDiffStdDev</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

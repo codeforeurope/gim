@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 0.4//EN" "http://www.getahead.ltd.uk/dwr/dwr.dtd">
+
+<dwr>
+    <allow>
+
+        <create creator="new" javascript="DwrCamera">
+            <param name="class" value="sistematica.sinottici.DwrCamera"/>
+        </create>
+
+        <create creator="new" javascript="DwrSinottici">
+            <param name="class" value="sistematica.sinottici.DwrSinottici"/>
+        </create>
+
+        <convert converter="bean" match="sistematica.sinottici.Street"/>
+        <convert converter="bean" match="sistematica.sinottici.Camera"/>
+         <convert converter="bean" match="sistematica.sinottici.Event"/>
+
+        <convert converter="exception" match="java.lang.Exception">
+            <param name="include" value="message,UUID"/>
+        </convert>
+    </allow>
+  
+</dwr>

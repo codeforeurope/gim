@@ -1,0 +1,16 @@
+REMEMBER TO CUSTOMIZE HDD_SERIAL IN hdd_serial.h!!!
+
+--------------------------------------------------------------------------------
+
+To apply the Sistematica patch do something like this:
+
+1) Make sure to be in MapServer's source code directory.
+2) patch -p1 < mapserver-6.0.1-atlas.patch
+
+The Sistematica patch, among other things creates a custom configure script,
+configure-plus. This script invokes the configure command with several
+predefined options.
+
+To re-create the patch use a command like the following:
+
+diff -ruN mapserver-6.0.1/ mapserver-6.0.1-atlas/ > mapserver-6.0.1-atlas.patch

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+DATEX con i parametri macroscopici che descrivono il traffico nei singoli
+archi del grafo stradale:
+
+    - TrafficSpeed (velocità media)
+    - TrafficFlow (flusso)
+    - TrafficConcentration (densità)
+    
+Il grafo stradale di riferimento è NAVTECH 2010.
+
+Gli archi del grafo stradale (measurementSiteReference) sono identificati
+dall'ID numerico che hanno sul database.
+
+Per distinguere anche il senso di percorrenza sull'arco l'ID può anche essere
+negativo; in particolare l'ID sarà:
+
+    - positivo, se l'arco viene percorso dalla testa alla coda
+    - negativo, se l'arco viene percorso dalla coda alla testa
+-->
+
+<d2LogicalModel xmlns:xsd="http://www.w3.org/2001/XMLSchema" modelBaseVersion="1.0" xmlns="http://datex2.eu/schema/1_0/1_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://datex2.eu/schema/1_0/1_0
+http://datex2.eu/schema/1_0/1_0/DATEXIISchema_1_0_1_0.xsd">
+	<exchange xmlns="http://datex2.eu/schema/1_0/1_0">
+		<supplierIdentification>
+			<country>it</country>
+			<nationalIdentifier>SISTEMATICA</nationalIdentifier>
+		</supplierIdentification>
+	</exchange>
+	<payloadPublication xsi:type="MeasuredDataPublication" lang="it" xmlns="http://datex2.eu/schema/1_0/1_0">
+		<publicationTime>$publicationTime</publicationTime>
+		<publicationCreator>
+			<country>it</country>
+			<nationalIdentifier>SISTEMATICA</nationalIdentifier>
+		</publicationCreator>
+		<measurementSiteTableReference>NAVTEQ_2010</measurementSiteTableReference>
+		<headerInformation>
+			<confidentiality>noRestriction</confidentiality>
+			<informationStatus>real</informationStatus>
+		</headerInformation>
+                
+                #foreach( $measurement in $measurements )
+		<siteMeasurements>
+			<measurementSiteReference>$measurement.Link</measurementSiteReference>
+			<measurementTimeDefault>$measurement.Instant</measurementTimeDefault>
+			<measuredValue index="1">
+				<basicDataValue xsi:type="TrafficSpeed">
+					<vehicleCharacteristics>
+						<vehicleType>anyVehicle</vehicleType>
+					</vehicleCharacteristics>
+					<averageVehicleSpeed>$measurement.Speed</averageVehicleSpeed>
+				</basicDataValue>
+			</measuredValue>
+			<measuredValue index="2">
+				<basicDataValue xsi:type="TrafficFlow">
+					<vehicleCharacteristics>
+						<vehicleType>anyVehicle</vehicleType>
+					</vehicleCharacteristics>
+					<vehicleFlow>$measurement.Flow</vehicleFlow>
+				</basicDataValue>
+			</measuredValue>
+		</siteMeasurements>
+                #end
+    </payloadPublication>
+</d2LogicalModel>

@@ -1,0 +1,119 @@
+#set($title = "Jobs");
+#parse("header.html")
+
+<h1>Jobs</h1>
+
+<div class="row">
+
+    <div class="span9">
+        <div class="well" style="height: 20em">
+            <h2 style="margin-bottom: 1em">Job monitor</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Queue</th>
+                        <th>Waiting</th>
+                        <th>Running</th>
+                        <th>Done</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Real time</td>
+                        <td id="real-time-waiting"></td>
+                        <td id="real-time-running"></td>
+                        <td id="real-time-done"></td>
+                    </tr>
+                    <tr>
+                        <td>Historic</td>
+                        <td id="historic-waiting"></td>
+                        <td id="historic-running"></td>
+                        <td id="historic-done"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="span7">
+        <div class="well" style="height: 20em">
+            <h2 style="margin-bottom: 1em">Launch job</h2>
+
+            <div id="error" class="alert-message error" style="display: none"></div>
+
+            <form class="form-stacked" action="#">
+                <fieldset>
+                    <div class="clearfix">
+                        <label for="from">From</label>
+                        <input class="span5" type="text" id="from" name="from">
+                    </div>
+
+                    <div class="clearfix">
+                        <label for="from">To</label>
+                        <input class="span5" type="text" id="to" name="to">
+                    </div>
+                </fieldset>
+
+                <div id="btn-run-job" class="btn large primary" style="font-size: 130%" onclick="scheduleJobs()">Go!</div>
+                <span id="errorMsg" class="help-inline" style="margin-left: 1em; color: #9d261d; display: none">Small snippet of help text</span>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#from').datetimepicker({
+        dateFormat: 'dd/mm/yy',
+        timeFormat: 'hh:mm',
+        stepHour: 1,
+        stepMinute: $configPeriodMinutes
+    });
+
+    $('#to').datetimepicker({
+        dateFormat: 'dd/mm/yy',
+        timeFormat: 'hh:mm',
+        stepHour: 1,
+        stepMinute: $configPeriodMinutes
+    });
+    
+    var realTimeWaiting = $("#real-time-waiting");
+    var realTimeRunning = $("#real-time-running");
+    var realTimeDone = $("#real-time-done");
+    var historicWaiting = $("#historic-waiting");
+    var historicRunning = $("#historic-running");
+    var historicDone = $("#historic-done");
+    var updateJobs = function() {
+        $.ajax({url:"/ajax/jobs?cmd=list", success: function(result) {
+                var object = eval("(" + result + ")");
+                realTimeWaiting.html(object["real-time"]["waiting"]);
+                realTimeRunning.html(object["real-time"]["running"]);
+                realTimeDone.html(object["real-time"]["done"]);
+                historicWaiting.html(object["historic"]["waiting"]);
+                historicRunning.html(object["historic"]["running"]);
+                historicDone.html(object["historic"]["done"]);
+            }});
+    }
+    
+    updateJobs();
+    setInterval("updateJobs()", 5000);
+    
+    var errorMsg = $("#errorMsg");
+    var scheduleJobs = function() {
+        var from = $("#from").val();
+        var to = $("#to").val();
+        var url = "/ajax/jobs?cmd=run&from=" + from + "&to=" + to;
+        $.ajax({url: url, success: function(result) {
+                var object = eval("(" + result + ")");
+                if (object["error"]) {
+                    errorMsg.html("Error: " + object["error"]);
+                    errorMsg.show();
+                } else {
+                    errorMsg.hide();
+                }
+            }});
+    }
+</script>
+
+#parse("footer.html")

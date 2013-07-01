@@ -1,0 +1,45 @@
+Di seguito sono descritti i comandi per l'uso del programma (si trovano tutti
+nella directory bin).
+
+
+
+UNIX
+----
+
+bin/start.sh
+
+    Avvia il programma in background (rimane in esecuzione anche alla chiusura
+    della shell da dove è stato invocato questo comando). L'output del programma
+    è visibile nel file di log contenuto nell'omonima directory.
+
+
+bin/status.sh
+
+    Controlla se il programma è in esecuzione.
+
+
+bin/stop.sh
+
+    Termina il programma, qualora sia in esecuzione.
+
+
+bin/start-foreground.sh
+
+    Avvia il programma lasciandolo in foreground; tiene occupata la shell ma è
+    utile per prove veloci, infatti l'output del programma è visibile anche
+    sulla stessa shell (i log sono comunque sempre disponibili).
+
+init.d/*
+
+    Script per l'inserimento del programma nel processo di init; è compatibile
+    con l'init a la "RedHat vecchio stile" (con chkconfig) e con gli init più
+    moderni (vedi le versioni più recenti di Fedora ed Ubuntu).
+
+
+
+WINDOWS
+-------
+
+bin\start-foreground.cmd
+
+    Avvia il programma lasciandolo in foreground.

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+  <display-name>webapp</display-name>
+  <servlet>
+    <servlet-name>gpsrxservlet</servlet-name>
+    <servlet-class>gpsdatareceiver.GpsRxServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>InitServlet</servlet-name>
+    <servlet-class>gpsdatareceiver.InitServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>gpsrxservlet</servlet-name>
+    <url-pattern>/gpsrxservlet</url-pattern>
+  </servlet-mapping>
+  <listener>
+    <listener-class>gpsdatareceiver.webcontext.StartApp</listener-class>
+  </listener>
+  <servlet>
+    <description></description>
+    <display-name>GpsStart</display-name>
+    <servlet-name>GpsStart</servlet-name>
+    <servlet-class>gpsdatareceiver.GpsStart</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GpsStart</servlet-name>
+    <url-pattern>/gpsstart</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ConnCheck</display-name>
+    <servlet-name>ConnCheck</servlet-name>
+    <servlet-class>gpsdatareceiver.ConnCheck</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ConnCheck</servlet-name>
+    <url-pattern>/conncheck</url-pattern>
+  </servlet-mapping>
+</web-app>

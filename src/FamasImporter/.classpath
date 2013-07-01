@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="JLIB/Sistematica/apptemplate.jar"/>
+	<classpathentry kind="var" path="JLIB/Sistematica/mobiworkdb.jar"/>
+	<classpathentry kind="var" path="JLIB/Sistematica/sismon_client.jar"/>
+	<classpathentry kind="var" path="JLIB/mysql-connector-java-5.1.17-bin.jar"/>
+	<classpathentry kind="var" path="JLIB/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="xml-rpc_lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="xml-rpc_lib/ws-commons-util-1.0.2.jar"/>
+	<classpathentry kind="lib" path="xml-rpc_lib/xmlrpc-client-3.1.3.jar"/>
+	<classpathentry kind="lib" path="xml-rpc_lib/xmlrpc-common-3.1.3.jar"/>
+	<classpathentry kind="lib" path="xml-rpc_lib/xmlrpc-server-3.1.3.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

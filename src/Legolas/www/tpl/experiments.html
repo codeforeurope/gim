@@ -1,0 +1,247 @@
+#set($title = "Experiments");
+#parse("header.html")
+
+<h1>Experiments</h1>
+
+<div class="row">
+    <div class="span16">
+        <div class="well" style="min-height: 20em">
+            <h2 style="margin-bottom: 1em">Experiments list</h2>
+
+            <table class="zebra-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Sources</th>
+                        <th>Model</th>
+                        <th>Timestamp</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+
+                <tbody id="experiments-tbody">
+
+                </tbody>
+            </table>
+            <div id="errorMsgRunDelete" class="alert-message error" style="display: none"></div>
+        </div>
+    </div>
+</div> <!-- row -->
+
+<div class="row">
+    <div class="span7">
+        <div class="well">
+            <h2 style="margin-bottom: 1em">New experiment</h2>
+
+            <div id="error" class="alert-message error" style="display: none"></div>
+
+            <form class="form-stacked" action="#">
+                <fieldset>
+                    <div class="clearfix">
+                        <label for="description">Description</label>
+                        <input class="span6" type="text" id="description" name="description">
+                    </div>
+
+                    <div class="clearfix">
+                        <label for="sources">Sources</label>
+                        <select class="span6" multiple="multiple" id="sources" name="sources"></select>
+                    </div>
+
+                    <div class="clearfix">
+                        <label for="model">Model</label>
+                        <select class="span6" id="model" name="model"></select>
+                    </div>
+
+                    <div class="clearfix">
+                        <label for="timestamp">Timestamp</label>
+                        <input class="span6" type="text" id="timestamp" name="timestamp">
+                    </div>
+                </fieldset>
+
+                <div class="btn large" style="font-size: 130%" onclick="createExperiment()">Create</div>
+                <p><div id="errorMsgCreate" class="alert-message error" style="display: none"></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="span9">
+        <div class="well">
+            <h2 style="margin-bottom: 1em">Job monitor</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Waiting</th>
+                        <th>Running</th>
+                        <th>Done</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td id="jobs-waiting"></td>
+                        <td id="jobs-running"></td>
+                        <td id="jobs-done"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> <!-- row -->
+
+<script>
+    $('#timestamp').datetimepicker({
+        dateFormat: 'dd/mm/yy',
+        timeFormat: 'hh:mm',
+        stepHour: 1,
+        stepMinute: $configPeriodMinutes
+    });
+    
+    var allSources = ""; // Filled by the first showSources call
+    
+    // Elements used by the following functions
+    var errorMsgCreate = $("#errorMsgCreate");
+    var errorMsgRunDelete = $("#errorMsgRunDelete");
+    var tbody = $("#experiments-tbody");
+    var model = $("#model");
+    var sources = $("#sources");
+    var jobsWaiting = $("#jobs-waiting");
+    var jobsRunning = $("#jobs-running");
+    var jobsDone = $("#jobs-done");
+    
+    var showModels = function() {
+        var url = "/ajax/experiments?cmd=listModels";
+        $.ajax({url: url, success: function(result) {
+                var object = eval("(" + result + ")");
+                if (!object["error"]) {
+                    model.empty();
+                    var toAppend = "";
+                    for (var i = 0; i < object.length; i++) {
+                        if (object[i]) {
+                            toAppend += "<option>";
+                            toAppend += object[i];
+                            toAppend += "</option>\n";
+                        }
+                    }
+                    model.append(toAppend);
+                }
+            }});
+    }
+    
+    var showSources = function() {
+        var url = "/ajax/experiments?cmd=listSources";
+        $.ajax({url: url, success: function(result) {
+                var object = eval("(" + result + ")");
+                if (!object["error"]) {
+                    sources.empty();
+                    var toAppend = "";
+                    var allSourcesArray = [];
+                    for (var i = 0; i < object.length; i++) {
+                        if (object[i]) {
+                            toAppend += "<option selected=\"selected\"";
+                            toAppend += ' value="' + object[i]["id"] + '">';
+                            toAppend += object[i]["id"] + " - " + object[i]["description"];
+                            toAppend += "</option>\n";
+                            allSourcesArray.push(object[i]["id"]);
+                        }
+                    }
+                    sources.append(toAppend);
+                    allSources = allSourcesArray.join(",");
+                }
+            }});
+    }
+
+    var showExperiments = function() {
+        var url = "/ajax/experiments?cmd=list";
+        $.ajax({url: url, success: function(result) {
+                var object = eval("(" + result + ")");
+                if (!object["error"]) {
+                    tbody.empty();
+                    var toAppend = "";
+                    for (var i = 0; i < object.length; i++) {
+                        if (object[i]) {
+                            toAppend += "<tr>\n";
+                            toAppend += "<td>" + (object[i]["id"]) + "</td>\n";
+                            toAppend += "<td>" + (object[i]["description"]) + "</td>\n";
+                            toAppend += "<td>" + (object[i]["sources"] == "null" || object[i]["sources"] == allSources ? "all sources" : object[i]["sources"]) + "</td>\n";
+                            toAppend += "<td>" + (object[i]["model"]) + "</td>\n";
+                            toAppend += "<td>" + (object[i]["timestamp"]) + "</td>\n";
+                            toAppend += '<td style="text-align: center"><div class="btn primary" onclick="runExperiment(' + (object[i]["id"]) + ')">Run</div></td>';
+                            toAppend += '<td style="text-align: center"><div class="btn danger" onclick="deleteExperiment(' + (object[i]["id"]) + ')">Del</div></td>';
+                            toAppend += "</tr>\n";
+                        }
+                    }
+                    tbody.append(toAppend);
+                }
+            }});
+    }
+    
+    var runExperiment = function(id_experiment) {
+        var url = "/ajax/experiments?cmd=run&id=" + id_experiment;
+        $.ajax({url: url, success: function(result) {
+                var object = eval("(" + result + ")");
+                if (object["error"]) {
+                    errorMsgRunDelete.html("Error: " + object["error"]);
+                    errorMsgRunDelete.show();
+                    setTimeout(function(){ errorMsgRunDelete.fadeOut() }, 7000);
+                } else {
+                    errorMsgRunDelete.hide();
+                }
+            }});
+    }
+
+    var deleteExperiment = function(id_experiment) {
+        var url = "/ajax/experiments?cmd=delete&id=" + id_experiment;
+        $.ajax({url: url, success: function(result) {
+                var object = eval("(" + result + ")");
+                if (object["error"]) {
+                    errorMsgRunDelete.html("Error: " + object["error"]);
+                    errorMsgRunDelete.show();
+                    setTimeout(function(){ errorMsgRunDelete.fadeOut() }, 7000);
+                } else {
+                    errorMsgRunDelete.hide();
+                    showExperiments();
+                }
+            }});
+    }
+    
+    var createExperiment = function() {       
+        var json = "{";
+        json += '"description": "' + $("#description").val() + '", ';
+        json += '"sources": "' + sources.val().join(",") + '", ';
+        json += '"model": "' + model.val() + '", ';
+        json += '"timestamp": "' + $("#timestamp").val() + '" ';
+        json += "}";
+        var url = "/ajax/experiments?cmd=create&json=" + json;
+        $.ajax({url: url, success: function(result) {
+                var object = eval("(" + result + ")");
+                if (object["error"]) {
+                    errorMsgCreate.html("Error: " + object["error"]);
+                    errorMsgCreate.show();
+                    setTimeout(function(){ errorMsgCreate.fadeOut() }, 7000);
+                } else {
+                    errorMsgCreate.hide();
+                    showExperiments();
+                }
+            }});
+    }
+    
+    var updateJobs = function() {
+        $.ajax({url:"/ajax/jobs?cmd=list", success: function(result) {
+                var object = eval("(" + result + ")");
+                jobsWaiting.html(object["experimental"]["waiting"]);
+                jobsRunning.html(object["experimental"]["running"]);
+                jobsDone.html(object["experimental"]["done"]);
+            }});
+    }
+    
+    showSources();
+    showModels();
+    showExperiments();
+    updateJobs();
+    setInterval("updateJobs()", 5000);
+</script>
+
+#parse("footer.html")

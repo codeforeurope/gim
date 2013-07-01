@@ -1,0 +1,40 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich">
+
+    <rich:panelMenu style="width: 200px; border: 0"
+       iconExpandedGroup="disc" iconCollapsedGroup="disc" 
+       iconExpandedTopGroup="chevronUp" iconGroupTopPosition="right" 
+       iconCollapsedTopGroup="chevronDown" iconCollapsedTopPosition="right"
+       expandSingle="false">
+       <rich:panelMenuGroup label="!!!Navigation" expanded="true">
+      <rich:panelMenuItem label="#{language['menu.level.top.mapview']}"/>
+      <rich:panelMenuItem label="#{language['menu.level.top.treeview']}"/>
+      <rich:panelMenuItem label="#{language['menu.level.top.global.view']}"/>
+      <rich:panelMenuItem label="#{language['menu.level.top.vehicle_trip']}"/>
+      <rich:panelMenuGroup label="#{language['menu.level.top.approaching.leaving']}">
+        <rich:panelMenuItem label="#{language['menu.level.sub.approaching.leaving.location']}"/>
+                    <rich:panelMenuItem label="#{language['menu.level.sub.approaching.leaving.mobil']}"/>
+                  </rich:panelMenuGroup>
+                </rich:panelMenuGroup>
+                <rich:panelMenuGroup label="#{language['menu.level.top.report']}" expanded="true">
+                   <rich:panelMenuItem label="#{language['menu.level.sub.report.location']}"/> 
+                   <rich:panelMenuItem label="#{language['menu.level.sub.report.mobile']}"/>
+	   <rich:panelMenuItem label="#{language['menu.level.sub.report.geofencing']}"/>
+	   <rich:panelMenuItem label="#{language['menu.level.sub.report.movements']}"/>
+	   <rich:panelMenuItem label="#{language['menu.level.sub.report.kmreport']}"/>
+	   <rich:panelMenuItem label="#{language['menu.level.sub.report.message']}"/>
+	   <rich:panelMenuItem label="#{language['menu.level.sub.report.event']}"/>
+	   <rich:panelMenuItem label="#{language['menu.level.sub.report.trips']}"/>
+	   <rich:panelMenuItem label="#{language['menu.level.sub.report.trip.calendar']}"/>
+     </rich:panelMenuGroup>
+     <rich:panelMenuGroup label="!!!System Events" expanded="true">
+	   <rich:panelMenuItem label="#{language['menu.level.top.message']}"/>
+       <rich:panelMenuItem label="#{language['menu.level.top.event.all']}"/>
+	   <rich:panelMenuItem label="#{language['menu.level.top.event.top']}"/>
+	 </rich:panelMenuGroup>					
+    </rich:panelMenu>
+</ui:component>    

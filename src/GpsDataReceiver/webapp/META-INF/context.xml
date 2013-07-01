@@ -1,0 +1,30 @@
+<Context debug="5" reloadable="true" crossContext="true">
+
+
+    <!--
+<Context antiJARLocking="true" path="/WEBROUTING"/>
+<Context debug="5" reloadable="true" crossContext="true" antiJARLocking="true" antiResourceLocking="true">
+    -->
+    
+    
+<!-- The contents of this file will be loaded for each web application 
+You should NOT turn this option on in production.
+The antiResourceLocking option can stop JSPs from redeploying when they are 
+edited (a reploy of the webapp is required instad and sometimes a clean out of the work directory).
+There are small restrictions apparently on not being able to get certain kinds 
+of resource paths to webapp resources for webapps that are being run from the special 
+"temp" area but we have never run into them in practice.
+-->
+
+
+
+    <!-- Uncomment this to disable session persistence across Tomcat restarts -->
+    <!--
+    <Context antiJARLocking="true" antiResourceLocking="true" >
+    <Manager pathname="" />
+    </Context>
+    -->
+
+<ResourceLink global="jdbc/gps" name="jdbc/gps" type="javax.sql.DataSource" />
+
+</Context>

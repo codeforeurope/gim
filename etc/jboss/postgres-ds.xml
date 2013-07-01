@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss Server Configuration                                           -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- See http://www.jboss.org/community/wiki/Multiple1PC for information about local-tx-datasource -->
+<!-- $Id: postgres-ds.xml 97536 2009-12-08 14:05:07Z jesper.pedersen $ -->
+<!-- ==================================================================== -->
+<!--  Datasource config for Postgres                                      -->
+<!-- ==================================================================== -->
+
+<datasources>
+   <xa-datasource>
+     <jndi-name>ViaVaiSRVPostgresDS</jndi-name>
+
+     <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+     <xa-datasource-property name="ServerName">127.0.0.1</xa-datasource-property>
+     <xa-datasource-property name="PortNumber">5432</xa-datasource-property>
+
+     <xa-datasource-property name="DatabaseName">gim</xa-datasource-property>
+     <xa-datasource-property name="User">postgres</xa-datasource-property>
+     <xa-datasource-property name="Password">postgres</xa-datasource-property>
+
+     <track-connection-by-tx></track-connection-by-tx>
+   </xa-datasource>
+</datasources>
+

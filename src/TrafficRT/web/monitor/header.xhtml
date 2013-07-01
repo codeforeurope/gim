@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich">
+      <link rel="shortcut icon" href="#{facesContext.externalContext.requestContextPath}/#{sessionScope['mobiworkUser'].imagesFolderUri}/favicon.ico" />    
+      <h:inputHidden id="selectGroup" value="#{mTList.selectedGroup}"/> 
+         <style>
+            .topmenu_elements {
+            
+              vertical-align: middle;
+              }
+           .topmenu_logo {
+           
+           padding-top: 0px;
+            vertical-align: middle;
+            
+              } 
+            .selectmenu {
+            	position: relative; 
+            	top: -2px;          	
+            }
+                 
+         </style> 
+         <script type="text/javascript">
+               
+	               function colorMenu(idRif)
+	               {
+	                    var colore='';
+	              		var pathAct = document.URL.substring(document.URL.lastIndexOf("/") + 1);
+	               		var funzione=idRif;
+	               		funzione = funzione.substring(funzione.lastIndexOf("/") + 1);
+	       				if(pathAct==funzione)
+	           			{
+							colore = '#1D186D';						
+	           			}
+	       				else
+	       				{
+	       					colore = '#FFFFFF';
+	       				}
+	       				
+	       				var elemento =document.getElementById(idRif)
+	       				elemento.style.color=colore;
+	               }
+	      </script>         
+         <!-- Serve per importare lo stile del RichPanel!!! -->
+         <div style="display:none">
+          <rich:panel>
+           <f:facet name="header">!</f:facet>
+          </rich:panel>
+         </div>
+         <div align="left" style="float:left; height: 70px;vertical-align: middle; margin-left: 10px;">
+            <img src="#{facesContext.externalContext.requestContextPath}/#{sessionScope['mobiworkUser'].imagesFolderUri}/logo_1.png"  
+                 onclick="document.location.href='#{facesContext.externalContext.requestContextPath}#{currentUser.homeFuncPath}'" 
+                 style="cursor: pointer"/>           
+         </div>
+         <div align="right" style="float:right; height: 70px;vertical-align: middle;margin-right: 10px;">
+            <img src="#{facesContext.externalContext.requestContextPath}/#{sessionScope['mobiworkUser'].imagesFolderUri}/logo_2.png"  
+                 onclick="document.location.href='#{facesContext.externalContext.requestContextPath}#{currentUser.homeFuncPath}'" 
+                 style="cursor: pointer"/>       
+         </div>       
+         <table width="100%" style="height: 1px"><tr><td>&nbsp;</td></tr></table>
+         <div class="rich-panel-header " style="height: 20px">
+         <table border="0" style="height: 18px; float:left; vertical-align: middle;margin-right: 10px;">
+          <tr>
+           <ui:repeat value="#{currentUser.operator.monitorFuncs}" var="func">
+             <td align="right" style="padding-left: 50px">
+            
+              <a class="menuItem" href="#{facesContext.externalContext.requestContextPath}#{func.webPath}" id="#{func.webPath}" >
+               <h:outputText value="#{currentUser.menuLabel}"/>
+              
+              </a>
+                <script type="text/javascript">              
+	               colorMenu('#{func.webPath}');
+	         </script>
+             </td>
+           </ui:repeat>    
+           <!--td align="right">
+           MapType: 
+                <h:selectOneMenu styleClass="selectmenu" id="selectMap" value="#{mTList.mapType}" onchange="document.forms[0].submit()">
+                   <f:selectItem itemLabel="Mappe Locali" itemValue="6"/>
+                   <f:selectItem itemLabel="GoogleMaps" itemValue="3"/>
+                   <f:selectItem itemLabel="VirtualEarth" itemValue="4"/>
+                   <f:selectItem itemLabel="Google Earth" itemValue="5"/>
+                   <f:selectItem itemLabel="ArcGIS" itemValue="7"/>
+                </h:selectOneMenu>
+           </td-->                             
+          </tr>
+         </table>
+         <table border="0" style="height: 18px; float:right; vertical-align: middle;margin-right: 10px;">
+          <tr>
+            <td width="150px" align="center">          
+             <a4j:region rendered="#{sessionScope['mobiworkUser'].administrator}">
+              <a class="menuItem" href="#{facesContext.externalContext.requestContextPath}/configure/areaManager.jsf">
+               <h:outputText value=" #{language['header.configure']}"/>  	  
+              </a>
+             </a4j:region>
+            </td>
+            <td width="150px" align="center"> 
+              <a class="menuItem" href="#{facesContext.externalContext.requestContextPath}/logout.jsp">           
+               <h:outputText value=" #{language['menu.level.top.logout']}"/>     
+		      </a>
+		    </td>
+          </tr>
+         </table>
+         </div>
+</ui:component>        

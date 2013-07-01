@@ -1,0 +1,80 @@
+#set($title = "Reports");
+#parse("header.html")
+
+<h1>Comparison</h1>
+
+<div class="row">
+    <div class="span5">
+        <div class="well">
+            <form class="form-stacked">
+                <fieldset>
+                    <div class="clearfix">
+                        <label for="a">Experiment A</label>
+                        <select id="a" name="a"></select>
+                    </div>
+
+                    <div class="clearfix">
+                        <label for="b">Experiment B</label>
+                        <select id="b" name="b"></select>
+                    </div>
+
+                    <div class="clearfix" style="padding-top: 1em">
+                        <div class="btn large primary" style="font-size: 130%" onclick="compareExperiments()">Compare</div>
+                    </div>
+                </fieldset>
+                
+                <div id="errorMsg" class="alert-message error" style="display: none; margin-top: 1em"></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="span11" id="output"></div>
+</div>
+
+<script>
+    var a = $("#a");
+    var b = $("#b");
+    var errorMsg = $("#errorMsg");
+    var output = $("#output");
+    
+    var showExecutedExperiments = function() {
+        var url = "/ajax/experiments?cmd=listExecuted";
+        $.ajax({url: url, success: function(result) {
+                var object = eval("(" + result + ")");
+                if (!object["error"]) {
+                    a.empty();
+                    b.empty();
+                    var toAppend = "";
+                    for (var i = 0; i < object.length; i++) {
+                        if (object[i]) {
+                            toAppend += "<option";
+                            toAppend += ' value="' + object[i]["id"] + '">';
+                            toAppend += object[i]["description"];
+                            toAppend += "</option>\n";
+                        }
+                    }
+                    a.append(toAppend);
+                    b.append(toAppend);
+                }
+            }});
+    }
+    
+    showExecutedExperiments();
+    
+    var compareExperiments = function() {
+        var idA = a.val();
+        var idB = b.val();
+        if (idA != null && idB != null) {
+            var url = "/ajax/comparison?cmd=compare&a=" + idA + "&b=" + idB;
+            $.ajax({url: url, success: function(result) {
+                    output.html(result);
+                }});
+        } else {
+            errorMsg.html("Select two experiments please");
+            errorMsg.show();
+            setTimeout(function(){ errorMsg.fadeOut() }, 5000);
+        }
+    }
+</script>
+
+#parse("footer.html")

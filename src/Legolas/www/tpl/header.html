@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        #if($experimental == "true")
+        <title>Legolas (experiments)</title>
+        #else
+        <title>Legolas (production)</title>
+        #end
+        <link rel="shortcut icon" href="favicon.ico">
+
+        <link rel="stylesheet" type="text/css" media="screen" href="bootstrap-1.3.0.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="jquery-ui-1.8.16.custom.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+
+        <script src="jquery-1.6.3.min.js"></script>
+        <script src="jquery.ui.core.js"></script>
+        <script src="jquery.ui.widget.js"></script>    
+        <script src="jquery.ui.mouse.js"></script>
+        <script src="jquery.ui.draggable.js"></script>
+        <script src="jquery.ui.slider.js"></script>
+        <script src="jquery.ui.datepicker.js"></script>
+        <script src="jquery-ui-timepicker-addon.js"></script>
+
+        <!--[if lt IE 9]>  
+        <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>  
+        <![endif]--> 
+    </head>
+
+    <body>
+
+        #if($password)
+        <div class="container-fluid"><!-- #wrapper -->
+
+            <div class="topbar" data-dropdown="dropdown" >
+                <div class="topbar-inner">
+                    <div class="container" style="width: 98%">
+                        #if($experimental == "true")
+                        <h3><a href="#">Legolas (experiments)</a></h3>
+                        #else
+                        <h3><a href="#">Legolas (production)</a></h3>
+                        #end
+                        <ul id="main-menu" class="nav" style="margin-left: 1em">
+
+                            <li #if($title == "Monitor")class="active"#{end}><a href="/monitor">Monitor</a></li>
+                            <li #if($title == "Log")class="active"#{end}><a href="/log">Log</a></li>
+                            #if($experimental == "true")
+                            <li #if($title == "Experiments")class="active"#{end}><a href="/experiments">Experiments</a></li>
+                            <li #if($title == "Comparison")class="active"#{end}><a href="/comparison">Comparison</a></li>
+                            #else
+                            <li #if($title == "Jobs")class="active"#{end}><a href="/jobs">Jobs</a></li>
+                            #end
+                        </ul>
+
+                        <ul class="nav secondary-nav">
+                            <li><a href="/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div><!-- /topbar-inner -->
+            </div><!-- /topbar -->
+            #end
+
+            <article>

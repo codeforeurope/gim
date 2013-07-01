@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Comments to support chkconfig on RedHat Linux
+# chkconfig: 2345 91 10
+
+# Comments to support LSB init script conventions
+### BEGIN INIT INFO
+# Provides legolas
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+### END INIT INFO
+
+# Source function library.
+[ -f /lib/lsb/init-functions ] \
+    && . /lib/lsb/init-functions \
+    || . /etc/rc.d/init.d/functions
+
+title='Legolas'
+basedir='/opt/Legolas'
+startup="$basedir/bin/start.sh"
+shutdown="$basedir/bin/stop.sh"
+restart="$basedir/bin/restart.sh"
+status="$basedir/bin/status.sh"
+
+function msg {
+    action $"$1" 2> /dev/null || log_success_msg "$1"
+}
+
+start(){
+ msg $"Starting $title."
+ ( $status || $startup ) > /dev/null
+ RETVAL=$?
+}
+
+stop(){
+ msg $"Stopping $title."
+ ( $status && $shutdown ) > /dev/null
+ RETVAL=$?
+}
+
+restart(){
+  stop
+  start
+}
+
+status(){
+  $status > /dev/null \
+    && echo "$title is running..." \
+    || echo "$title is stopped..."
+}
+
+# See how we were called.
+case "$1" in
+start)
+ start
+ ;;
+stop)
+ stop
+ ;;
+status)
+ status
+ ;;
+restart)
+ restart
+ ;;
+*)
+ echo $"Usage: $0 {start|stop|status|restart}"
+ exit 1
+esac
+
+exit 0

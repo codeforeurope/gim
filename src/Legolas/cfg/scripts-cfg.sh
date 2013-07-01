@@ -1,0 +1,1 @@
+MAIN_CLASS=sistematica.gim.legolas.Main

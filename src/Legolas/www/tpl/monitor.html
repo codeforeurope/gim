@@ -1,0 +1,111 @@
+#set($title = "Monitor");
+#parse("header.html")
+
+<h1>Monitor</h1>
+
+<h2>Configuration</h2>
+
+<table class="zebra-striped" style="width: 50%">
+    <thead>
+        <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>JDBC driver</td>
+            <td>$configDbDriver</td>
+        </tr>
+        <tr>
+            <td>JDBC URL</td>
+            <td>$configDbUrl</td>
+        </tr>
+        <tr>
+            <td>DB user</td>
+            <td>$configDbUser</td>
+        </tr>
+        <tr>
+            <td>Period</td>
+            <td>$configPeriodMinutes minutes</td>
+        </tr>
+        <tr>
+            <td>Max. input age</td>
+            <td>$configMaxInputAgeMinutes minutes</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 style="margin-top: 1em">Runtime metrics</h2>
+
+<table class="zebra-striped" style="width: 50%">
+    <thead>
+        <tr>
+            <th>Parameter</th>
+            <th>Value (updated every 5 seconds)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Uptime</td>
+            <td id="metric-uptime"></td>
+        </tr>
+
+        <tr>
+            <td>Jobs</td>
+            <td id="metric-jobs"></td>
+        </tr>
+
+        <tr>
+            <td>Jobs with errors</td>
+            <td id="metric-jobErrors"></td>
+        </tr>
+
+        <tr>
+            <td>Real time jobs</td>
+            <td id="metric-realTimeJobs"></td>
+        </tr>
+
+        <tr>
+            <td>Historic jobs</td>
+            <td id="metric-historicJobs"></td>
+        </tr>
+
+        <tr>
+            <td>Experimental jobs</td>
+            <td id="metric-experimentalJobs"></td>
+        </tr>
+
+        <tr>
+            <td>Samples</td>
+            <td id="metric-samples"></td>
+        </tr>
+
+        <tr>
+            <td>Samples on bidirectional edges</td>
+            <td id="metric-samplesOnBidirectionalEdges"></td>
+        </tr>
+
+        <tr>
+            <td>Edges with statistics</td>
+            <td id="metric-edgesWithStats"></td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    var updateMetrics = function() {
+        $.ajax({url:"/ajax/metrics", success: function(result) {
+                var object = eval("(" + result + ")");
+                for (var metric in object["metrics"]) {
+                    $("#metric-" + metric).html(object["metrics"][metric]);
+                }
+            }});
+    }
+    
+    updateMetrics();
+    setInterval("updateMetrics()", 5000);
+    
+</script>
+
+#parse("footer.html")

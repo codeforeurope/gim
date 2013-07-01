@@ -1,0 +1,1430 @@
+MAP
+
+  EXTENT 11 40 12 44
+  IMAGETYPE "png"
+    SIZE 640 480
+  TRANSPARENT ON
+  FONTSET "fonts/fonts.txt"
+
+  PROJECTION
+    "init=epsg:900913"
+    "proj=merc"
+  END
+
+  OUTPUTFORMAT
+    NAME "png"
+    DRIVER "GD/PNG"
+    MIMETYPE "image/png"
+    IMAGEMODE RGB
+    EXTENSION "png"
+    FORMATOPTION "interlace=on"
+  END
+
+  WEB
+    METADATA
+      "wms_title" "WMS SERVER"
+      "wms_onlineresource"  "http://85.18.173.78/cgi-bin/atlas.fcgi?map=/opt/maps/traffic.map&"
+      "wms_srs"  "EPSG:900913"
+    END
+    IMAGEPATH "/var/www/html/mapfile/tmp/"
+    IMAGEURL "/mapfile/tmp/"
+    LOG "/var/www/html/mapfile/tmp/maplog"
+  END
+
+  
+######################################################################
+#### LAYER ALL_THE_REST
+######################################################################
+LAYER
+  NAME "ALL_THE_REST"
+  TYPE line
+  METADATA
+    "wms_title" "ALL_THE_REST"
+  END
+  TYPE line
+  STATUS DEFAULT
+  PROJECTION
+    "init=epsg:900913"
+    "proj=longlat" 
+  END
+  CONNECTIONTYPE OGR
+  CONNECTION "MySQL:gim,user=root,password=gimpassword,host=85.18.173.78,port=3306,tables=lkst"
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  DATA "select idno, shap, 100 * avg_speed / speed_limit as perc from sinottico_link"
+  
+  MAXSCALEDENOM 200000
+
+             CLASS
+               NAME "BLACK"
+               EXPRESSION ([perc] >= 0 AND [perc] < 10)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+               
+             CLASS
+               NAME "RED"
+               EXPRESSION ([perc] >= 10 AND [perc] < 25)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+             CLASS
+               NAME "YELLOW"
+               EXPRESSION ([perc] >= 25 AND [perc] < 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+             CLASS
+               NAME "GREEN"
+               EXPRESSION ([perc] >= 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+             CLASS
+               NAME "GREY"
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+
+  END # layer
+    
+######################################################################
+#### LAYER GRA
+######################################################################
+LAYER
+  NAME "GRA"
+  TYPE line
+  METADATA
+    "wms_title" "GRA"
+  END
+  TYPE line
+  STATUS DEFAULT
+  PROJECTION
+    "init=epsg:900913"
+    "proj=longlat" 
+  END
+  CONNECTIONTYPE OGR
+  CONNECTION "MySQL:gim,user=root,password=gimpassword,host=85.18.173.78,port=3306,tables=lkst"
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  DATA "select dir, GeomFromText(AES_DECRYPT(UNHEX(shap), 'gimpassword'), 4326) as shap, 100 * CAST(AES_DECRYPT(UNHEX(avg_speed), 'gimpassword') AS SIGNED) / CAST(AES_DECRYPT(UNHEX(speed_limit), 'gimpassword') AS SIGNED) as perc from sinottico_link_ord where id_street IN (1)"
+
+  
+            #Direzione BLACK con offset -5
+             CLASS
+               NAME "DIR BLACK con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 0 AND [perc] < 10)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 4
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR BLACK senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 0 AND [perc] < 10) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione RED con offset -5
+             CLASS
+               NAME "DIR RED con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 10 AND [perc] < 30)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 4
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR RED senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 10 AND [perc] < 30) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione YELLOW con offset -5
+             CLASS
+               NAME "DIR YELLOW con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 30 AND [perc] < 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 4
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR YELLOW senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 30 AND [perc] < 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREEN con offset -5
+             CLASS
+               NAME "DIR GREEN con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 4
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREEN senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREY con offset -5
+             CLASS
+               NAME "DIR GREY con offset"
+               EXPRESSION ([dir] eq 1)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 4
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREY senza offset"
+               EXPRESSION ([dir] ne 1) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+
+  END # layer
+    
+######################################################################
+#### LAYER Autostrada Aeroporto Di Fiumicino (A91)
+######################################################################
+LAYER
+  NAME "Autostrada Aeroporto Di Fiumicino (A91)"
+  TYPE line
+  METADATA
+    "wms_title" "Autostrada Aeroporto Di Fiumicino (A91)"
+  END
+  TYPE line
+  STATUS DEFAULT
+  PROJECTION
+    "init=epsg:900913"
+    "proj=longlat" 
+  END
+  CONNECTIONTYPE OGR
+  CONNECTION "MySQL:gim,user=root,password=gimpassword,host=85.18.173.78,port=3306,tables=lkst"
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  DATA "select dir, GeomFromText(AES_DECRYPT(UNHEX(shap), 'gimpassword'), 4326) as shap, 100 * CAST(AES_DECRYPT(UNHEX(avg_speed), 'gimpassword') AS SIGNED) / CAST(AES_DECRYPT(UNHEX(speed_limit), 'gimpassword') AS SIGNED) as perc from sinottico_link_ord where id_street IN (2)"
+
+  
+            #Direzione BLACK con offset 5
+             CLASS
+               NAME "DIR BLACK con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 0 AND [perc] < 10)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 4
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR BLACK senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 0 AND [perc] < 10) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione RED con offset 5
+             CLASS
+               NAME "DIR RED con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 10 AND [perc] < 30)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 4
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR RED senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 10 AND [perc] < 30) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione YELLOW con offset 5
+             CLASS
+               NAME "DIR YELLOW con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 30 AND [perc] < 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 4
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR YELLOW senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 30 AND [perc] < 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREEN con offset 5
+             CLASS
+               NAME "DIR GREEN con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 4
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREEN senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREY con offset 5
+             CLASS
+               NAME "DIR GREY con offset"
+               EXPRESSION ([dir] eq 0)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 4
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREY senza offset"
+               EXPRESSION ([dir] ne 0) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+
+  END # layer
+    
+######################################################################
+#### LAYER Autostrada Azzurra (A12), Diramazione Roma Sud (A1), Autostrada del Sole (A1), Strada dei Parchi (A24)
+######################################################################
+LAYER
+  NAME "Autostrada Azzurra (A12), Diramazione Roma Sud (A1), Autostrada del Sole (A1), Strada dei Parchi (A24)"
+  TYPE line
+  METADATA
+    "wms_title" "Autostrada Azzurra (A12), Diramazione Roma Sud (A1), Autostrada del Sole (A1), Strada dei Parchi (A24)"
+  END
+  TYPE line
+  STATUS DEFAULT
+  PROJECTION
+    "init=epsg:900913"
+    "proj=longlat" 
+  END
+  CONNECTIONTYPE OGR
+  CONNECTION "MySQL:gim,user=root,password=gimpassword,host=85.18.173.78,port=3306,tables=lkst"
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  DATA "select dir, GeomFromText(AES_DECRYPT(UNHEX(shap), 'gimpassword'), 4326) as shap, 100 * CAST(AES_DECRYPT(UNHEX(avg_speed), 'gimpassword') AS SIGNED) / CAST(AES_DECRYPT(UNHEX(speed_limit), 'gimpassword') AS SIGNED) as perc from sinottico_link_ord where id_street IN (3, 5, 6, 7)"
+
+  
+            #Direzione BLACK con offset 5
+             CLASS
+               NAME "DIR BLACK con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 0 AND [perc] < 10)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 4
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR BLACK senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 0 AND [perc] < 10) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione RED con offset 5
+             CLASS
+               NAME "DIR RED con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 10 AND [perc] < 30)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 4
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR RED senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 10 AND [perc] < 30) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione YELLOW con offset 5
+             CLASS
+               NAME "DIR YELLOW con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 30 AND [perc] < 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 4
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR YELLOW senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 30 AND [perc] < 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREEN con offset 5
+             CLASS
+               NAME "DIR GREEN con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 4
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREEN senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREY con offset 5
+             CLASS
+               NAME "DIR GREY con offset"
+               EXPRESSION ([dir] eq 1)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 4
+                      OFFSET 5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREY senza offset"
+               EXPRESSION ([dir] ne 1) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+
+  END # layer
+    
+######################################################################
+#### LAYER Diramazione Roma Nord (A1)
+######################################################################
+LAYER
+  NAME "Diramazione Roma Nord (A1)"
+  TYPE line
+  METADATA
+    "wms_title" "Diramazione Roma Nord (A1)"
+  END
+  TYPE line
+  STATUS DEFAULT
+  PROJECTION
+    "init=epsg:900913"
+    "proj=longlat" 
+  END
+  CONNECTIONTYPE OGR
+  CONNECTION "MySQL:gim,user=root,password=gimpassword,host=85.18.173.78,port=3306,tables=lkst"
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  DATA "select dir, GeomFromText(AES_DECRYPT(UNHEX(shap), 'gimpassword'), 4326) as shap, 100 * CAST(AES_DECRYPT(UNHEX(avg_speed), 'gimpassword') AS SIGNED) / CAST(AES_DECRYPT(UNHEX(speed_limit), 'gimpassword') AS SIGNED) as perc from sinottico_link_ord where id_street IN (4)"
+
+  
+            #Direzione BLACK con offset -5
+             CLASS
+               NAME "DIR BLACK con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 0 AND [perc] < 10)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 4
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR BLACK senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 0 AND [perc] < 10) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione RED con offset -5
+             CLASS
+               NAME "DIR RED con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 10 AND [perc] < 30)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 4
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR RED senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 10 AND [perc] < 30) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione YELLOW con offset -5
+             CLASS
+               NAME "DIR YELLOW con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 30 AND [perc] < 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 4
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR YELLOW senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 30 AND [perc] < 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREEN con offset -5
+             CLASS
+               NAME "DIR GREEN con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 4
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREEN senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREY con offset -5
+             CLASS
+               NAME "DIR GREY con offset"
+               EXPRESSION ([dir] eq 0)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 4
+                      OFFSET -5 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREY senza offset"
+               EXPRESSION ([dir] ne 0) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 8
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+
+  END # layer
+    
+######################################################################
+#### LAYER Via Appia Nuova (SS7), Via Aurelia (SS1)
+######################################################################
+LAYER
+  NAME "Via Appia Nuova (SS7), Via Aurelia (SS1)"
+  TYPE line
+  METADATA
+    "wms_title" "Via Appia Nuova (SS7), Via Aurelia (SS1)"
+  END
+  TYPE line
+  STATUS DEFAULT
+  PROJECTION
+    "init=epsg:900913"
+    "proj=longlat" 
+  END
+  CONNECTIONTYPE OGR
+  CONNECTION "MySQL:gim,user=root,password=gimpassword,host=85.18.173.78,port=3306,tables=lkst"
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  DATA "select dir, GeomFromText(AES_DECRYPT(UNHEX(shap), 'gimpassword'), 4326) as shap, 100 * CAST(AES_DECRYPT(UNHEX(avg_speed), 'gimpassword') AS SIGNED) / CAST(AES_DECRYPT(UNHEX(speed_limit), 'gimpassword') AS SIGNED) as perc from sinottico_link_ord where id_street IN (8, 10)"
+
+  
+            #Direzione BLACK con offset -3
+             CLASS
+               NAME "DIR BLACK con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 0 AND [perc] < 10)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                      OFFSET -3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 2
+                      OFFSET -3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR BLACK senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 0 AND [perc] < 10) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 2
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione RED con offset -3
+             CLASS
+               NAME "DIR RED con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 10 AND [perc] < 30)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                      OFFSET -3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 2
+                      OFFSET -3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR RED senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 10 AND [perc] < 30) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 2
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione YELLOW con offset -3
+             CLASS
+               NAME "DIR YELLOW con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 30 AND [perc] < 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                      OFFSET -3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 2
+                      OFFSET -3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR YELLOW senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 30 AND [perc] < 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 2
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREEN con offset -3
+             CLASS
+               NAME "DIR GREEN con offset"
+               EXPRESSION ([dir] eq 0 AND [perc] >= 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                      OFFSET -3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 2
+                      OFFSET -3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREEN senza offset"
+               EXPRESSION ([dir] ne 0 AND [perc] >= 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 2
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREY con offset -3
+             CLASS
+               NAME "DIR GREY con offset"
+               EXPRESSION ([dir] eq 0)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                      OFFSET -3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 2
+                      OFFSET -3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREY senza offset"
+               EXPRESSION ([dir] ne 0) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 2
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+
+  END # layer
+    
+######################################################################
+#### LAYER Via Casilina (SS6), Via Tuscolana (SS215), Via Anagnina (SS511), Via Pontina (SS148), Via Tiburtina (SS5), Diramazione Salaria (SS4DIR), Via Salaria (SS4), Via Flaminia (SS3), Via Cassia (SS2)
+######################################################################
+LAYER
+  NAME "Via Casilina (SS6), Via Tuscolana (SS215), Via Anagnina (SS511), Via Pontina (SS148), Via Tiburtina (SS5), Diramazione Salaria (SS4DIR), Via Salaria (SS4), Via Flaminia (SS3), Via Cassia (SS2)"
+  TYPE line
+  METADATA
+    "wms_title" "Via Casilina (SS6), Via Tuscolana (SS215), Via Anagnina (SS511), Via Pontina (SS148), Via Tiburtina (SS5), Diramazione Salaria (SS4DIR), Via Salaria (SS4), Via Flaminia (SS3), Via Cassia (SS2)"
+  END
+  TYPE line
+  STATUS DEFAULT
+  PROJECTION
+    "init=epsg:900913"
+    "proj=longlat" 
+  END
+  CONNECTIONTYPE OGR
+  CONNECTION "MySQL:gim,user=root,password=gimpassword,host=85.18.173.78,port=3306,tables=lkst"
+  PROCESSING "CLOSE_CONNECTION=DEFER"
+  DATA "select dir, GeomFromText(AES_DECRYPT(UNHEX(shap), 'gimpassword'), 4326) as shap, 100 * CAST(AES_DECRYPT(UNHEX(avg_speed), 'gimpassword') AS SIGNED) / CAST(AES_DECRYPT(UNHEX(speed_limit), 'gimpassword') AS SIGNED) as perc from sinottico_link_ord where id_street IN (9, 11, 12, 13, 14, 15, 16, 17, 18)"
+
+  
+            #Direzione BLACK con offset 3
+             CLASS
+               NAME "DIR BLACK con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 0 AND [perc] < 10)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                      OFFSET 3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 2
+                      OFFSET 3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR BLACK senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 0 AND [perc] < 10) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 0 0 0
+                  WIDTH 2
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione RED con offset 3
+             CLASS
+               NAME "DIR RED con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 10 AND [perc] < 30)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                      OFFSET 3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 2
+                      OFFSET 3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR RED senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 10 AND [perc] < 30) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 153 0 0
+                  WIDTH 2
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione YELLOW con offset 3
+             CLASS
+               NAME "DIR YELLOW con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 30 AND [perc] < 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                      OFFSET 3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 2
+                      OFFSET 3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR YELLOW senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 30 AND [perc] < 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 255 204 0
+                  WIDTH 2
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREEN con offset 3
+             CLASS
+               NAME "DIR GREEN con offset"
+               EXPRESSION ([dir] eq 1 AND [perc] >= 70)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                      OFFSET 3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 2
+                      OFFSET 3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREEN senza offset"
+               EXPRESSION ([dir] ne 1 AND [perc] >= 70) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 51 187 0
+                  WIDTH 2
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+            #Direzione GREY con offset 3
+             CLASS
+               NAME "DIR GREY con offset"
+               EXPRESSION ([dir] eq 1)
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                      OFFSET 3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 2
+                      OFFSET 3 -99
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+
+            #Direzione senza offset 
+             CLASS
+               NAME "DIR GREY senza offset"
+               EXPRESSION ([dir] ne 1) 
+               STYLE
+                  COLOR 255 255 255
+                  WIDTH 4
+                  LINECAP round
+                  LINEJOIN round
+               END
+               STYLE
+                  COLOR 130 130 130
+                  WIDTH 2
+                  LINECAP round
+                  LINEJOIN round
+               END
+             END
+    
+
+  END # layer
+    
+
+END

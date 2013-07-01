@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<eclipse-userlibraries version="2">
+    <library name="GPS_DATA_RECEIVER" systemlibrary="false">
+        <archive path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/jdom-1.0b10.jar"/>
+        <archive path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/log4j-1.2.15.jar"/>
+        <archive path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/octo/jsistematica-octo-1.0.5.jar"/>
+        <archive path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/ojdbc6.jar"/>
+        <archive path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/xmlparserv2.jar"/>
+        <archive path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/Sistematica/mobiworkdb.jar"/>
+    </library>
+</eclipse-userlibraries>

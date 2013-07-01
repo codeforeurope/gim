@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_20"/>
+	<classpathentry kind="lib" path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/mysql-connector-java-5.1.16-bin.jar"/>
+	<classpathentry kind="lib" path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/postgis-jdbc-1.1.6.jar"/>
+	<classpathentry kind="lib" path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/postgresql-8.3-604.jdbc4.jar"/>
+	<classpathentry kind="lib" path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/activation.jar"/>
+	<classpathentry kind="lib" path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/mail.jar"/>
+	<classpathentry kind="lib" path="/home/fabrizio/Documenti/SVN/SISTEMATICA/JLIB/Sistematica/VisualTrackLogger.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

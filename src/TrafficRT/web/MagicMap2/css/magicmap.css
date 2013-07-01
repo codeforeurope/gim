@@ -1,0 +1,77 @@
+/*---------------------*/
+/* OSM */
+/*---------------------*/
+.olControlAttribution {	display: none; }
+
+/*---------------------*/
+/* GOOGLE */
+/*---------------------*/
+.olLayerGoogleCopyright { display: none; }
+.olLayerGooglePoweredBy { display: none; }
+
+/*---------------------*/
+/* BING */
+/*---------------------*/
+.MSVE_LogoContainer { display: none; }
+.MSVE_Copyright { display: none; }
+
+
+/*----------------------*/
+/* MISURA DISTANZA */
+/*----------------------*/
+
+#controlToggle
+{
+    width: 150px;
+    text-align: left;
+	list-style-type: none;
+	margin-top: 5px;
+	padding: 0px;
+};
+
+#controlToggle li {
+    list-style: none;
+}
+#output {
+    float: left;
+    margin-left: 2px;
+}
+
+/* avoid pink tiles */
+.olImageLoadError {
+    background-color: transparent !important;
+}
+      
+.measureDiv
+{
+	position: absolute;
+	background-color: white;
+	border: 1px solid black;
+	width: 150px;
+	height: 75px;
+	top: 45px;
+	left: 55px;
+	font-family: sans-serif;
+	font-size: 10px;
+	z-index: 1000;
+}
+
+.olControlNavToolbar
+{
+	background-color: white;
+	border: 1px solid black;
+	padding-top: 5px;
+	padding-right: 5px;
+	top: 5px;
+	left: 55px;
+}
+
+.olControlEditingToolbar
+{
+	background-color: white;
+	border: 1px solid black;
+	padding-top: 5px;
+	padding-right: 5px;
+	top: 5px;
+	left: 55px;
+}
